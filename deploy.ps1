@@ -1,17 +1,20 @@
 # Деплой на GitHub Pages
 # Запустите в PowerShell из папки проекта
 
-$repoName = "lawyer-client-dashboard"
+$owner = "abudkina"
+$repoName = "Test3"
 
 # 1. Авторизация (один раз)
 gh auth login
 
-# 2. Создать public репозиторий и запушить
-gh repo create $repoName --public --source=. --remote=origin --push
+# 2. Привязать удалённый репозиторий и запушить
+git remote remove origin 2>$null
+git remote add origin "https://github.com/$owner/$repoName.git"
+git push -u origin main
 
 # 3. Включить GitHub Pages (Actions)
-gh api repos/{owner}/$repoName/pages -X POST -f build_type=workflow
+gh api repos/$owner/$repoName/pages -X POST -f build_type=workflow
 
 Write-Host ""
 Write-Host "Готово! Сайт появится через 1-2 минуты:"
-Write-Host "https://$(gh api user -q .login).github.io/$repoName/"
+Write-Host "https://$owner.github.io/$repoName/"

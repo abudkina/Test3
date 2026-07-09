@@ -1,7 +1,13 @@
 import { useCallback, useEffect, useState } from 'react'
+import { sendClientNotification, type NotificationResult, type NotificationSettings } from '../services/notifications'
 import type { Client, ClientStatus } from '../types'
 
 const STORAGE_KEY = 'lawyer-clients'
+
+interface UseClientsOptions {
+  notificationSettings?: NotificationSettings
+  onNotificationResult?: (result: NotificationResult) => void
+}
 
 function loadClients(): Client[] {
   try {
@@ -16,8 +22,9 @@ function saveClients(clients: Client[]) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(clients))
 }
 
-export function useClients() {
+export function useClients(options: UseClientsOptions = {}) {
   const [clients, setClients] = useState<Client[]>(loadClients)
+  const { notificationSettings, onNotificationResult } = options
 
   useEffect(() => {
     saveClients(clients)
@@ -32,7 +39,13 @@ export function useClients() {
       createdAt: new Date().toISOString(),
     }
     setClients((prev) => [client, ...prev])
-  }, [])
+
+    if (notificationSettings) {
+      void sendClientNotification(notificationSettings, client)
+        .then((result) => onNotificationResult?.(result))
+        .catch(() => onNotificationResult?.({ status: 'error', message: 'Не удалось отправить уведомление' }))
+    }
+  }, [notificationSettings, onNotificationResult])
 
   const updateStatus = useCallback((id: string, status: ClientStatus) => {
     setClients((prev) =>

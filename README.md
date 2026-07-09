@@ -8,6 +8,7 @@
 - Добавление нового клиента
 - Изменение статуса дела: **Новый** → **В работе** → **Закрыт**
 - Счётчики клиентов по каждому статусу
+- Автоматизация: уведомление юристу на **Email** или **Telegram** при добавлении клиента
 - Данные сохраняются в localStorage браузера
 
 ## Запуск локально
@@ -29,11 +30,12 @@ npm run dev
 
 ```bash
 gh auth login
-gh repo create lawyer-client-dashboard --public --source=. --remote=origin --push
+git remote add origin https://github.com/abudkina/Test3.git
+git push -u origin main
 ```
 
 После push GitHub Actions автоматически задеплоит сайт.  
-URL: `https://<ваш-username>.github.io/lawyer-client-dashboard/`
+URL: `https://abudkina.github.io/Test3/`
 
 В настройках репозитория: **Settings → Pages → Source: GitHub Actions**.
 
